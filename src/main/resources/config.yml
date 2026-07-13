@@ -1,0 +1,90 @@
+monsoon:
+  enabled: true
+  chance: 0.03
+  duration_ticks: 48000 # 2 days (48000 ticks = 2400 seconds = 40 minutes)
+  intensity: high
+  min_biome_altitude: 58
+  drain_rate_blocks_per_minute: 1
+  enabled_biomes:
+    # Specific biomes (recommended for monsoons)
+    - plains
+    - jungle
+    - swamp
+    - forest
+    - birch_forest
+    - dark_forest
+    - taiga
+    - old_growth_pine_taiga
+    - old_growth_spruce_taiga
+    # Or use "all" to enable in all biomes:
+    # - all
+  effects:
+    flooding: true
+    crop_enhancement: true
+    crop_damage: true
+    visual_effects: true
+    sound_effects: true
+
+# Obsidian Storm - Extremely rare catastrophic celestial bombardment
+obsidian_storm:
+  enabled: true
+  chance: 0.001 # Extremely rare - 0.1% chance
+  duration_ticks: 3600 # 3 minutes (3600 ticks = 180 seconds = 3 minutes)
+  cooldown_hours: 168 # 1 week cooldown
+  min_altitude: 40 # Minimum Y level for impact sites
+  max_altitude: 120 # Maximum Y level for obsidian spawning
+  enabled_biomes:
+    # Specific biomes (recommended for dramatic open areas)
+    - plains
+    - desert
+    - badlands
+    - savanna
+    - windswept_hills
+    - windswept_gravelly_hills
+    - windswept_forest
+    - windswept_savanna
+    - meadow
+    - stony_shore
+    # Or use "all" to enable in all biomes (not recommended due to destructive nature):
+    # - all
+  obsidian_blocks:
+    fall_speed: 2.0 # Blocks per second
+    spawn_height_offset: 40 # How high above ground to spawn blocks
+    base_frequency: 3 # Base blocks per minute at intensity 1
+    max_frequency: 15 # Maximum blocks per minute at max intensity
+  explosion:
+    base_power: 8.0 # TNT equivalent explosion power
+    max_power: 16.0 # Maximum explosion power at max intensity
+    crater_obsidian_chance: 0.8 # Chance for crater blocks to be obsidian
+    fire_spread_chance: 0.6 # Chance to start fires in blast zone
+    destroy_all_blocks: true # Whether explosion destroys all blocks
+  intensity:
+    min: 1
+    max: 5
+    escalation_rate: 0.2 # How quickly intensity increases over time
+  effects:
+    screen_shake: true
+    thunder_sounds: true
+    smoke_particles: true
+    fire_effects: true
+    crater_cooling: true
+
+# Global settings
+global:
+  debug: false
+  natural_triggers: true
+  max_concurrent_events: 1
+  check_interval_ticks: 1200 # Check every minute (1200 ticks = 60 seconds)
+  
+# Flood mechanics
+flooding:
+  max_water_level: 3
+  water_spread_chance: 0.7
+  drain_check_interval: 21600 # 18 minutes in ticks (21600 ticks = 1080 seconds = 18 minutes)
+  natural_drainage: true
+
+# Performance settings
+performance:
+  max_blocks_per_tick: 50
+  async_processing: true
+  cache_biome_checks: true

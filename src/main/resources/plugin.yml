@@ -1,0 +1,43 @@
+name: WildWeatherUpdate
+version: '${project.version}'
+main: org.xpfarm.wildweather.WildWeatherPlugin
+description: Dynamic weather effects plugin for Minecraft with realistic weather patterns and events
+api-version: '1.21'
+author: xp.farm
+website: xp.farm
+
+commands:
+  weather:
+    description: Wild Weather Update commands
+    usage: /weather <trigger|force|status|cancel|debug> [args...]
+    permission: wildweather.command.weather
+    permission-message: You don't have permission to use this command
+
+permissions:
+  wildweather.*:
+    description: Access to all Wild Weather Update features
+    children:
+      wildweather.command.*: true
+      wildweather.admin.*: true
+  wildweather.command.*:
+    description: Access to all Wild Weather Update commands
+    children:
+      wildweather.command.weather: true
+  wildweather.command.weather:
+    description: Use weather commands
+    default: op
+  wildweather.admin.*:
+    description: Administrative access to Wild Weather Update
+    children:
+      wildweather.admin.trigger: true
+      wildweather.admin.force: true
+      wildweather.admin.debug: true
+  wildweather.admin.trigger:
+    description: Trigger weather events manually
+    default: op
+  wildweather.admin.force:
+    description: Force weather events (bypasses all conditions)
+    default: op
+  wildweather.admin.debug:
+    description: Access debug information
+    default: op
