@@ -169,7 +169,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for development guidelines.
 
 ## License
 
-This project follows the xp.farm development standards and is part of the Minecraft plugin ecosystem.
+This project is licensed under the [GNU Affero General Public License v3.0 or later](LICENSE).
 
 ---
 
