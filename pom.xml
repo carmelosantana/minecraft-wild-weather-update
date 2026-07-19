@@ -19,7 +19,7 @@
 
     <name>Wild Weather Update</name>
     <description>Dynamic weather effects plugin for Minecraft with realistic weather patterns and events</description>
-    <url>xp.farm</url>
+    <url>https://xpfarm.org</url>
 
     <properties>
         <java.version>25</java.version>
