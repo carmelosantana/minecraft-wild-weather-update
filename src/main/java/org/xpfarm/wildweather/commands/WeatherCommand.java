@@ -13,6 +13,7 @@ import org.xpfarm.wildweather.events.MonsoonEvent;
 import org.xpfarm.wildweather.events.ObsidianStormEvent;
 import org.xpfarm.wildweather.events.WeatherEvent;
 import org.xpfarm.wildweather.manager.WeatherManager;
+import org.xpfarm.wildweather.util.PlayerLookup;
 
 import java.util.*;
 
@@ -117,9 +118,10 @@ public class WeatherCommand implements CommandExecutor, TabCompleter {
             return;
         }
 
-        Player player = Bukkit.getPlayer(targetPlayer);
+        Player player = PlayerLookup.resolveAllowingPartial(targetPlayer).orElse(null);
         if (player == null || !player.isOnline()) {
-            sender.sendMessage(Component.text("Player '" + targetPlayer + "' not found or not online!", NamedTextColor.RED));
+            sender.sendMessage(Component.text(
+                PlayerLookup.noSuchPlayerMessage(targetPlayer, PlayerLookup.onlineNames()), NamedTextColor.RED));
             return;
         }
 
@@ -184,9 +186,10 @@ public class WeatherCommand implements CommandExecutor, TabCompleter {
 
         // Check if a player is specified
         if (args.length >= 3) {
-            target = Bukkit.getPlayer(args[2]);
+            target = PlayerLookup.resolveAllowingPartial(args[2]).orElse(null);
             if (target == null) {
-                sender.sendMessage(Component.text("Player '" + args[2] + "' not found.", NamedTextColor.RED));
+                sender.sendMessage(Component.text(
+                    PlayerLookup.noSuchPlayerMessage(args[2], PlayerLookup.onlineNames()), NamedTextColor.RED));
                 return;
             }
         } else if (sender instanceof Player) {
