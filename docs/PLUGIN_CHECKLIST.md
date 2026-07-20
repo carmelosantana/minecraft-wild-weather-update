@@ -89,7 +89,23 @@ files were left as they were.
 - [x] `mvn --batch-mode --no-transfer-progress clean verify` succeeds:
       `Tests run: 6, Failures: 0, Errors: 0, Skipped: 0` / `BUILD SUCCESS`, producing
       `wild-weather-update-1.0.2.jar`.
-- [ ] Releasable JAR contents and embedded `plugin.yml` not inspected in this pass.
+- [x] The releasable JAR and embedded `plugin.yml` were inspected; `original-*` JARs are excluded.
+      Verified by unzipping the built JAR. Embedded `plugin.yml` reads `version: '1.0.2'`,
+      `api-version: '1.21'`, `main: org.xpfarm.wildweather.WildWeatherPlugin`. Bytecode major
+      version of the first `.class` entry is **69 (Java 25)**, matching the ecosystem standard.
+
+      **Exclusion is at the CI release-asset step, not at build time.** `target/` contains both
+      `wild-weather-update-1.0.2.jar` and `original-wild-weather-update-1.0.2.jar` — the
+      `original-*` JAR *is* still produced locally. It is excluded from released assets by
+      `.github/workflows/build.yml`, which filters `! -name 'original-*'` on both the SHA256SUMS
+      step and the `gh release upload` step (and excludes `!target/original-*.jar` from the
+      uploaded build artifact). So no `original-*` JAR can reach a release, but one does exist on
+      disk after a local build.
+
+      `maven-shade-plugin` is a **no-op** here: every dependency is `provided`/`test` scope, so it
+      shades nothing and exists only to rename the untouched jar, which is what creates the
+      `original-*` file. `agua-de-florida` resolved this by removing shading entirely; doing the
+      same here is out of scope for this change.
 
 Test infrastructure was created as part of this change: the repository had no `src/test/java` and
 its only test dependency was JUnit 4 with no surefire declared, so no test could have run. JUnit 4
