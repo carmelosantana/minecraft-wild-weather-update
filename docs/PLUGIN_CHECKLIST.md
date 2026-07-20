@@ -121,13 +121,49 @@ case-insensitive before partial — is therefore unverified by test.
 
 ## 7. Matrix
 
-### 7a — single-plugin runtime verification — NOT RUN
+### 7a — single-plugin runtime verification (`1.0.2`) — PARTIAL
 
-- [ ] Paper, Geyser, Floodgate, and ViaVersion start together with this build. Not run this pass.
-- [ ] Java and Bedrock smoke tests. **NOT DONE — no real Bedrock client available.** The fix's
-      central claim, that a Floodgate-prefixed Bedrock player is now reachable by their bare name,
-      has **not** been confirmed against a live Bedrock join. It rests on the documented Floodgate
-      `username-prefix: "."` default plus unit tests over the candidate list.
+Evidence below comes from a **single disposable Legendary stack run on 2026-07-20**
+(image `05jchambers/legendary-minecraft-geyser-floodgate:latest`) with **all six fixed plugin
+JARs mounted together**. The same run backs the gate 7a note in all six repositories.
+
+- [x] Paper, Geyser, Floodgate, and ViaVersion start successfully together. **Verified.** Paper
+      reached `Done (18.178s)! For help, type "help"`. The Java port answered a real Minecraft
+      protocol handshake — not merely a TCP connect — reporting `Paper 26.1.2 | protocol 775` and
+      `PLAYERS: 0 / 20`. `/plugins` reported 9 plugins, all green/enabled: AguaDeFlorida, floodgate,
+      Geyser-Spigot, GlutenFreeBread, StarterPack, TheCurse, ViaVersion, WildWeatherUpdate,
+      WorldCRUD. Companion versions observed: floodgate v2.2.5-SNAPSHOT (b138-fc99cfc),
+      Geyser-Spigot v2.11.0-SNAPSHOT (Geyser 2.11.0-b1200), ViaVersion present; Geyser started on
+      UDP port 19200. Each plugin enabled at its new version with **zero exceptions, errors, or
+      SEVERE lines attributable to any of the six** — including `Enabling WildWeatherUpdate v1.0.2`.
+- [ ] Java and Bedrock smoke tests cover joins plus affected commands, events, permissions,
+      persistence, and reloads. **PARTIAL — the Java side was exercised, the Bedrock side was not.
+      Left unchecked deliberately.**
+
+      *What was exercised.* The **Floodgate prefix assumption was confirmed empirically, not merely
+      from documentation**: reading `/minecraft/plugins/floodgate/config.yml` inside the running
+      container on the Floodgate 2.2.5 build showed `username-prefix: "."` and
+      `replace-spaces: true`, alongside the shipped comment "Floodgate prepends a prefix to bedrock
+      usernames to avoid conflicts". The `.` prefix this fix depends on is now **observed on the
+      actual runtime, not assumed** — the single most important upgrade to the evidence.
+
+      The **new failure path was then exercised end-to-end over RCON on the live server** for every
+      fixed command across all six plugins — `/aguadeflorida give carm`, `/curse start carm`,
+      `/curse book carm`, `/worldcrud listpermissions carm`, `/starterpack give carm`,
+      `/gfbread clear carm`, and `/weather trigger rain carm` — and each returned the new
+      message with no exception: exactly `No player matches 'carm'; no players are online.` This proves that
+      `PlayerLookup.resolve` / `resolveAllowingPartial` / `onlineNames` / `noSuchPlayerMessage`
+      actually execute correctly against real Bukkit APIs, that command dispatch reaches them, and
+      that the message renders — none of which the unit tests could show.
+
+      *What remains unverified.* **The positive match is still unproven.** No real Bedrock client
+      was available, so no player with a `.`-prefixed Java-side username ever joined. What is
+      verified is that the resolution path runs without error and that the not-found branch is
+      correct; that `/weather trigger rain carm` actually **finds** a Bedrock player named `.acarm` has
+      **not** been observed. Only the empty-online-list branch of `noSuchPlayerMessage` was
+      exercised; the branch that lists online player names was not. The operator will verify live on
+      the dev server with helpers. `resolve` / `resolveAllowingPartial` still have **no unit-test
+      coverage** (Bukkit statics, no MockBukkit).
 
 ### 7b — ten-plugin ecosystem matrix — NOT RUN
 
